@@ -80,8 +80,8 @@ finalPoint limbs =
 gradientDescentStep :: [Double] -> ([Double] -> t) -> (t -> Double) -> [Double]
 gradientDescentStep vars valueFunction errorFunction =
     let
-        delta = 0.01
-        learningRate = 0.001
+        delta = 0.001
+        learningRate = 0.0001
 
         nthDelta n =
             (List.replicate n 0) ++ [delta] ++ (List.repeat 0)
@@ -111,7 +111,7 @@ gradientDescent :: [Double] -> ([Double] -> t) -> (t -> Double) -> [Double]
 gradientDescent initialVars  valueFunction  errorFunction =
     let
         stopCondition oldError newError =
-            abs (oldError - newError) < 0.1
+            newError - oldError < 0.001
 
         currError =
             errorFunction $ valueFunction initialVars
@@ -201,10 +201,6 @@ eventHandler :: Game.Event -> [Limb] -> [Limb]
 eventHandler event oldLimbs =
     case event of
         Game.EventMotion (x,y) ->
-            let
-            msg = (show x) ++ ", " ++ (show y) ++ (List.concat $ List.map limbStateToString oldLimbs)
-            in
-            Debug.trace msg $
             inverseKinematics
                 oldLimbs
                 (V3 (realToFrac x) (realToFrac y) 1)
@@ -215,7 +211,8 @@ eventHandler event oldLimbs =
 someFunc :: IO ()
 someFunc =
     let
-        initialLimbs = [Limb 100 0, Limb 100 (pi/4), Limb 200 (pi/4)]
+        initialLimbs = --[Limb 100 0, Limb 100 (pi/4), Limb 100 (pi/4)]
+            List.replicate 10 (Limb 30 0)
 
         lines =
             Gloss.pictures
