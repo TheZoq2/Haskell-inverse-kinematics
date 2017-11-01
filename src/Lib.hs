@@ -9,6 +9,8 @@ import qualified Debug.Trace as Debug
 import qualified Data.Maybe as Maybe
 import qualified Data.List as List
 
+import qualified System.Random as Random
+
 import qualified Data.Aeson as Aeson
 
 import Linear.V3 as V3
@@ -211,7 +213,7 @@ eventHandler event oldLimbs =
 someFunc :: IO ()
 someFunc =
     let
-        initialLimbs = --[Limb 100 0, Limb 100 (pi/4), Limb 100 (pi/4)]
+        initialLimbs =
             List.replicate 10 (Limb 30 0)
 
         lines =
@@ -226,6 +228,9 @@ someFunc =
                 , lines
                 ]
     in
+    do
+        r1 <- Random.getStdGen
+        let randList = Random.randomRs (0, maxBound) r1 :: [Int]
         Gloss.play
             (Gloss.InWindow "Window" (200, 200) (10, 10))
             Gloss.white
